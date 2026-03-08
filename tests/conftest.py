@@ -31,17 +31,24 @@ def driver(request):
     if browser == "chrome":
         options = webdriver.ChromeOptions()
         options.add_argument("--window-size=1280,800")
+
+        chrome_path = r"C:\Users\evavu\.wdm\drivers\chromedriver\win64\145.0.7632.117\chromedriver-win32\chromedriver.exe"
+
         drv = webdriver.Chrome(
-            service=ChromeService(ChromeDriverManager().install()),
+            service=ChromeService(executable_path=chrome_path),
             options=options
         )
+
     else:
         options = webdriver.FirefoxOptions()
+
         gecko_path = r"C:\Users\evavu\WebDriver\bin\geckodriver.exe"
+
         drv = webdriver.Firefox(
             service=FirefoxService(executable_path=gecko_path),
             options=options
         )
+
         drv.set_window_size(1280, 800)
 
     yield drv

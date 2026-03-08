@@ -1,5 +1,4 @@
 import allure
-from selenium.webdriver.support import expected_conditions as EC
 
 from pages.base_page import BasePage
 from locators.main_page_locators import MainPageLocators as L
@@ -11,7 +10,6 @@ class MainPage(BasePage):
     @allure.step("Открыть главную страницу")
     def open_main(self):
         self.open(BASE_URL)
-
         self.is_visible(L.FIRST_BUN)
 
     @allure.step("Перейти в Конструктор")
@@ -26,27 +24,27 @@ class MainPage(BasePage):
     def open_first_bun(self):
         self.click(L.FIRST_BUN)
 
-    @allure.step("Проверить, что модалка ингредиента открылась")
+    @allure.step("Проверить, что модальное окно ингредиента открыто")
     def assert_ingredient_modal_opened(self):
         self.is_visible(L.MODAL)
         self.is_visible(L.MODAL_TITLE)
 
-    @allure.step("Закрыть модалку ингредиента крестиком")
+    @allure.step("Закрыть модальное окно ингредиента крестиком")
     def close_ingredient_modal(self):
         self.click_visible(L.MODAL_CLOSE)
 
-    @allure.step("Проверить, что модалка ингредиента закрыта")
+    @allure.step("Проверить, что модальное окно ингредиента закрыто")
     def assert_ingredient_modal_closed(self):
         self.is_not_visible(L.MODAL)
 
-    @allure.step("Добавить булку в конструктор (drag&drop)")
+    @allure.step("Добавить булку в конструктор")
     def add_bun_to_constructor(self):
         self.drag_and_drop(L.FIRST_BUN, L.CONSTRUCTOR_DROP_ZONE)
 
-    @allure.step("Получить счетчик булки")
+    @allure.step("Получить значение счетчика булки")
     def get_bun_counter(self) -> int:
-        return int(self.text(L.FIRST_BUN_COUNTER))
+        return self.get_counter_value_or_zero(L.FIRST_BUN_COUNTER)
 
-    @allure.step("Дождаться, что счетчик булки = {value}")
+    @allure.step("Дождаться, что счетчик булки равен {value}")
     def wait_bun_counter_equals(self, value: int):
-        self.wait.until(EC.text_to_be_present_in_element(L.FIRST_BUN_COUNTER, str(value)))
+        self.wait_text_equals(L.FIRST_BUN_COUNTER, str(value))
