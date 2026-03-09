@@ -5,6 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
 
 
 def pytest_addoption(parser):
@@ -32,27 +33,22 @@ def driver(request):
         options = webdriver.ChromeOptions()
         options.add_argument("--window-size=1280,800")
 
-        chrome_path = r"C:\Users\evavu\.wdm\drivers\chromedriver\win64\145.0.7632.117\chromedriver-win32\chromedriver.exe"
-
         drv = webdriver.Chrome(
-            service=ChromeService(executable_path=chrome_path),
+            service=ChromeService(ChromeDriverManager().install()),
             options=options
         )
-
     else:
         options = webdriver.FirefoxOptions()
 
-        gecko_path = r"C:\Users\evavu\WebDriver\bin\geckodriver.exe"
-
         drv = webdriver.Firefox(
-            service=FirefoxService(executable_path=gecko_path),
+            service=FirefoxService(GeckoDriverManager().install()),
             options=options
         )
-
         drv.set_window_size(1280, 800)
 
     yield drv
     drv.quit()
+
 
 @pytest.fixture(autouse=True)
 def attach_screenshot_on_failure(request, driver):

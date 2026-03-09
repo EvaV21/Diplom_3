@@ -25,17 +25,16 @@ class MainPage(BasePage):
         self.click(L.FIRST_BUN)
 
     @allure.step("Проверить, что модальное окно ингредиента открыто")
-    def assert_ingredient_modal_opened(self):
-        self.is_visible(L.MODAL)
-        self.is_visible(L.MODAL_TITLE)
+    def is_ingredient_modal_opened(self) -> bool:
+        return self.is_visible(L.MODAL) and self.is_visible(L.MODAL_TITLE)
 
     @allure.step("Закрыть модальное окно ингредиента крестиком")
     def close_ingredient_modal(self):
         self.click_visible(L.MODAL_CLOSE)
 
     @allure.step("Проверить, что модальное окно ингредиента закрыто")
-    def assert_ingredient_modal_closed(self):
-        self.is_not_visible(L.MODAL)
+    def is_ingredient_modal_closed(self) -> bool:
+        return self.is_not_visible(L.MODAL)
 
     @allure.step("Добавить булку в конструктор")
     def add_bun_to_constructor(self):
@@ -48,3 +47,8 @@ class MainPage(BasePage):
     @allure.step("Дождаться, что счетчик булки равен {value}")
     def wait_bun_counter_equals(self, value: int):
         self.wait_text_equals(L.FIRST_BUN_COUNTER, str(value))
+
+    @allure.step("Проверить, что URL содержит {part}")
+    def has_url_part(self, part: str) -> bool:
+        self.wait_url_contains(part)
+        return part in self.driver.current_url
