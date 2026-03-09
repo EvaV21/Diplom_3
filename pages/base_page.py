@@ -56,10 +56,10 @@ class BasePage:
     def wait_url_contains(self, part: str):
         self.wait.until(EC.url_contains(part))
 
-    @allure.step("Проверить, что текущий URL содержит: {part}")
-    def current_url_contains(self, part: str) -> bool:
-        self.wait.until(EC.url_contains(part))
-        return part in self.driver.current_url
+    @allure.step("Проверить, что текущий URL равен: {url}")
+    def current_url_is(self, url: str) -> bool:
+        self.wait.until(lambda d: d.current_url == url)
+        return self.driver.current_url == url
 
     @allure.step("Обновить страницу")
     def refresh_page(self):

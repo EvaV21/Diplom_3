@@ -48,6 +48,6 @@ class MainPage(BasePage):
     def wait_bun_counter_equals(self, value: int):
         self.wait_text_equals(L.FIRST_BUN_COUNTER, str(value))
 
-    @allure.step("Проверить, что URL содержит {part}")
-    def has_url_part(self, part: str) -> bool:
-        return self.current_url_contains(part)
+    @allure.step("Проверить, что текущий URL равен {url}")
+    def has_current_url(self, url: str) -> bool:
+        return self.current_url_is(url)
