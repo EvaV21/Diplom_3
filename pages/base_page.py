@@ -1,7 +1,7 @@
 import allure
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 from utils.data import DEFAULT_TIMEOUT
 
@@ -42,19 +42,24 @@ class BasePage:
         element = self.wait.until(EC.visibility_of_element_located(locator))
         return element.text
 
-    @allure.step("Элемент виден: {locator}")
+    @allure.step("Проверить, что элемент видим: {locator}")
     def is_visible(self, locator) -> bool:
         self.wait.until(EC.visibility_of_element_located(locator))
         return True
 
-    @allure.step("Элемент не виден: {locator}")
+    @allure.step("Проверить, что элемент невидим: {locator}")
     def is_not_visible(self, locator) -> bool:
         self.wait.until(EC.invisibility_of_element_located(locator))
         return True
 
-    @allure.step("Подождать URL содержит: {part}")
+    @allure.step("Подождать, что URL содержит: {part}")
     def wait_url_contains(self, part: str):
         self.wait.until(EC.url_contains(part))
+
+    @allure.step("Проверить, что текущий URL содержит: {part}")
+    def current_url_contains(self, part: str) -> bool:
+        self.wait.until(EC.url_contains(part))
+        return part in self.driver.current_url
 
     @allure.step("Обновить страницу")
     def refresh_page(self):
@@ -83,12 +88,12 @@ class BasePage:
 
             fireEvent('dragstart', source, dataTransfer);
             fireEvent('dragenter', target, dataTransfer);
-            fireEvent('dragover',  target, dataTransfer);
-            fireEvent('drop',      target, dataTransfer);
-            fireEvent('dragend',   source, dataTransfer);
+            fireEvent('dragover', target, dataTransfer);
+            fireEvent('drop', target, dataTransfer);
+            fireEvent('dragend', source, dataTransfer);
             """,
             element_from,
-            element_to
+            element_to,
         )
 
     @allure.step("Получить значение счетчика или 0: {locator}")
@@ -96,8 +101,8 @@ class BasePage:
         elements = self.find_elements(locator)
         if not elements:
             return 0
-        text = elements[0].text.strip()
-        return int(text) if text else 0
+        value = elements[0].text.strip()
+        return int(value) if value else 0
 
     @allure.step("Дождаться, что текст элемента равен: {value}")
     def wait_text_equals(self, locator, value: str):
@@ -105,20 +110,18 @@ class BasePage:
 
     @allure.step("Дождаться увеличения числового значения элемента: {locator}")
     def wait_number_increases(self, locator, previous_value: int):
-        self.wait.until(
-            lambda d: int(self.text(locator)) >= previous_value + 1
-        )
+        self.wait.until(lambda d: int(self.text(locator)) >= previous_value + 1)
 
-    @allure.step("Дождаться появления номера заказа в списке")
+    @allure.step("Дождаться пользовательского условия")
     def wait_until(self, condition):
         self.wait.until(condition)
 
-    @allure.step("Проверить, что элемент есть в списке")
+    @allure.step("Проверить, что текст есть среди элементов")
     def has_text_in_elements(self, locator, target_text: str) -> bool:
         elements = self.find_elements(locator)
         return any((element.text.strip().lstrip("0") or "0") == target_text for element in elements)
 
-    @allure.step("Безопасно проверить условие ожидания")
+    @allure.step("Безопасно дождаться выполнения условия")
     def wait_until_true(self, condition) -> bool:
         try:
             self.wait.until(lambda d: condition())

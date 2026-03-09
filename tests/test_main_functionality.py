@@ -13,6 +13,7 @@ class TestMainFunctionality:
         page.open_main()
         page.go_to_feed()
         assert page.has_url_part("feed")
+
         page.go_to_constructor()
         assert page.has_url_part("stellarburgers.education-services.ru")
 
@@ -52,8 +53,10 @@ class TestMainFunctionality:
 
         page.open_main()
         before = page.get_bun_counter()
+
         page.add_bun_to_constructor()
         page.wait_bun_counter_equals(before + 2)
+
         after = page.get_bun_counter()
 
         assert after > before

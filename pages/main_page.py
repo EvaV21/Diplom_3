@@ -1,7 +1,7 @@
 import allure
 
-from pages.base_page import BasePage
 from locators.main_page_locators import MainPageLocators as L
+from pages.base_page import BasePage
 from utils.urls import BASE_URL
 
 
@@ -50,5 +50,4 @@ class MainPage(BasePage):
 
     @allure.step("Проверить, что URL содержит {part}")
     def has_url_part(self, part: str) -> bool:
-        self.wait_url_contains(part)
-        return part in self.driver.current_url
+        return self.current_url_contains(part)

@@ -1,5 +1,5 @@
-import pytest
 import allure
+import pytest
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -32,17 +32,15 @@ def driver(request):
     if browser == "chrome":
         options = webdriver.ChromeOptions()
         options.add_argument("--window-size=1280,800")
-
         drv = webdriver.Chrome(
             service=ChromeService(ChromeDriverManager().install()),
-            options=options
+            options=options,
         )
     else:
         options = webdriver.FirefoxOptions()
-
         drv = webdriver.Firefox(
             service=FirefoxService(GeckoDriverManager().install()),
-            options=options
+            options=options,
         )
         drv.set_window_size(1280, 800)
 
@@ -58,5 +56,5 @@ def attach_screenshot_on_failure(request, driver):
         allure.attach(
             driver.get_screenshot_as_png(),
             name="screenshot",
-            attachment_type=allure.attachment_type.PNG
+            attachment_type=allure.attachment_type.PNG,
         )
